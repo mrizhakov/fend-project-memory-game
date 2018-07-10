@@ -25,14 +25,7 @@ if (createNewDeck == false) {
 	//document.getElementById("restart").addEventListener("click", restartGame);
 	console.log(clickedCards[0]);
 	console.log("hello");
-	
-		if (clickedCards[0] !== clickedCards[1]) 
-			{
-				cardsNotMatch();
-			}
-
-} 
-
+	} 
 }
 
 function createDeck() {
@@ -87,25 +80,17 @@ if (event.target.className.includes("card") || event.target.className.includes("
 		if (event.target.className.includes("fa")) {
 			event.target.parentNode.className = "card open show";
 			clickedCards.push(event.target.className);
+			}
 		}
-
-		
-//console.log(event.target);
-//console.log(event.target.className);
-console.log(clickedCards);
-		}
-
 	}
 	if ((clickedCards[0] != undefined) && (clickedCards[0] == clickedCards[1])) {
-		
 				cardsMatch(); 
 				incrementCounter();
-				if (guessedCards.length == deckList.length) 
-				{ 
-					allCardsMatch();
+				}
+	if ((clickedCards[1] != undefined) && (clickedCards[0] !== clickedCards[1])) {
+				cardsNotMatch();
 				}
 			}
-}
 
 function cardsMatch() {
 	console.log("match!");
@@ -117,7 +102,10 @@ function cardsMatch() {
 	
 	//matchedCards.parentNode.className = "card match";
 
-function cardsNotMatch() {};
+function cardsNotMatch() {
+console.log("no match!");
+clickedCards.splice(0, 2);
+};
 function allCardsMatch() {};
 function incrementCounter() {};
 function restartGame() {};
