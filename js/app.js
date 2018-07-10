@@ -9,6 +9,8 @@ var deckList = deckList.concat(deckList);
 var clickedCards = [];
 var guessedCards = [];
 var createNewDeck = false;
+var moves = 0;
+var maximumMoves = 10;
 console.log(clickedCards);
 memoryGame();
 /*
@@ -21,6 +23,7 @@ function memoryGame() {
 if (createNewDeck == false) {
 	createDeck();
 	document.getElementById("deck").addEventListener("click", openCard);
+	document.getElementById("restart").addEventListener("click", restartGame);
 
 	//document.getElementById("restart").addEventListener("click", restartGame);
 	console.log(clickedCards[0]);
@@ -69,6 +72,7 @@ function shuffle(array) {
 function openCard() {
 /* opens cards */
 if (event.target.className.includes("card") || event.target.className.includes("fa")) {
+	incrementCounter();
 
 	if (clickedCards.length <=1) {
 
@@ -116,8 +120,25 @@ clickedCards.splice(0, 2);
 function allCardsMatch() {
 	console.log("all cards match!")
 };
-function incrementCounter() {};
-function restartGame() {};
+
+function incrementCounter() {
+	var moves = parseInt(document.getElementById("moves").innerHTML, 10);
+	document.getElementById("moves").innerHTML = moves+1;
+	console.log(moves);
+
+if (moves > maximumMoves) 
+{
+	console.log("too many moves, you lost!");
+	var moves = 0;
+	document.getElementById("moves").innerHTML = moves;
+	restartGame();
+}
+};
+	
+
+function restartGame() {
+	createDeck();
+};
 /*
  * set up the event listener for a card. If a card is clicked:
  *  - display the card's symbol (put this functionality in another function that you call from this one)
