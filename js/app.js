@@ -9,7 +9,7 @@ var deckList = deckList.concat(deckList);
 var clickedCards = [];
 var guessedCards = [];
 var createNewDeck = false;
-var moves = 0;
+var moves = 1;
 var maximumMoves = 10;
 console.log(clickedCards);
 memoryGame();
@@ -126,17 +126,17 @@ function incrementCounter() {
 	document.getElementById("moves").innerHTML = moves+1;
 	console.log(moves);
 
-if (moves > maximumMoves) 
+if ((maximumMoves-2) < moves) 
 {
 	console.log("too many moves, you lost!");
-	var moves = 0;
-	document.getElementById("moves").innerHTML = moves;
 	restartGame();
 }
 };
 	
 
 function restartGame() {
+	var moves = 0;
+	document.getElementById("moves").innerHTML = moves;
 	createDeck();
 };
 /*
