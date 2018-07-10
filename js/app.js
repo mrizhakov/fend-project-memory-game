@@ -3,12 +3,42 @@
  */
 var deckList = ["fa-diamond", "fa-paper-plane-o", "fa-anchor", "fa-bolt", "fa-cube", "fa-leaf", "fa-bicycle", "fa-bomb"];
 var deckList = deckList.concat(deckList);
+
+//var click = event.target.className;
+//console.log(click);
+var clickedCards = new Array();
+var guessedCards = new Array();
+var createNewDeck = false;
+memoryGame();
 /*
  * Display the cards on the page
  *   - shuffle the list of cards using the provided "shuffle" method below
  *   - loop through each card and create its HTML
  *   - add each card's HTML to the page
  */
+function memoryGame() {
+if (createNewDeck == false) {
+	createDeck();
+	document.getElementById("deck").addEventListener("click", openCard);
+	document.getElementById("restart").addEventListener("click", restartGame);
+	if (clickedCards[0] == clickedCards[1]) 
+			{
+				cardsMatch(); 
+				incrementCounter();
+				if (guessedCards.length == deckList.length) 
+				{
+					allCardsMatch();
+				}
+			}
+		if (clickedCards[0] !== clickedCards[1]) 
+			{
+				cardsNotMatch();
+			}
+
+} 
+
+}
+
 function createDeck() {
 document.getElementById("deck").innerHTML = "";
 
@@ -30,9 +60,6 @@ shuffle(deckList);
 }
 	}
 
-createDeck();
-
-
 // Shuffle function from http://stackoverflow.com/a/2450976
 function shuffle(array) {
     var currentIndex = array.length, temporaryValue, randomIndex;
@@ -48,7 +75,38 @@ function shuffle(array) {
     return array;
 }
 
+/*checks how many cards are open*/
 
+function openCard() {
+
+if (event.target.className.includes("card") || event.target.className.includes("fa")) {
+
+	if (clickedCards.length <=1) {
+
+		if (event.target.className.includes("card")) {
+			event.target.className = "card match";
+			clickedCards.push(event.target.firstChild.className);
+		}
+
+		if (event.target.className.includes("fa")) {
+			event.target.parentNode.className = "card match"
+			clickedCards.push(event.target.className);
+		}
+
+		
+console.log(event.target);
+console.log(event.target.className);
+console.log(clickedCards);
+		}
+
+	}
+}
+
+function cardsMatch() {};
+function cardsNotMatch() {};
+function allCardsMatch() {};
+function incrementCounter() {};
+function restartGame() {};
 /*
  * set up the event listener for a card. If a card is clicked:
  *  - display the card's symbol (put this functionality in another function that you call from this one)
