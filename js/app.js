@@ -67,7 +67,7 @@ function shuffle(array) {
 /*checks how many cards are open*/
 
 function openCard() {
-
+/* opens cards */
 if (event.target.className.includes("card") || event.target.className.includes("fa")) {
 
 	if (clickedCards.length <=1) {
@@ -83,21 +83,27 @@ if (event.target.className.includes("card") || event.target.className.includes("
 			}
 		}
 	}
+
+/* checks if two cards are open and match to launch cardsMatch and incrementCounter()*/
 	if ((clickedCards[0] != undefined) && (clickedCards[0] == clickedCards[1])) {
 				cardsMatch(); 
 				incrementCounter();
 				}
+/* checks if two cards areopen,but dont match and launches cardsMatch() and incrementCounter()*/
 	if ((clickedCards[1] != undefined) && (clickedCards[0] !== clickedCards[1])) {
 				cardsNotMatch();
 				}
-			}
+	if (guessedCards.length == deckList.length) {
+				allCardsMatch();
+	}
+}
 
 function cardsMatch() {
 	console.log("match!");
 	guessedCards.push(clickedCards[0]);
 	guessedCards.push(clickedCards[1]);
 	clickedCards.splice(0, 2);
-}
+	}
 	//var matchedCards = document.getElementsByClassName(clickedCards[0]);
 	
 	//matchedCards.parentNode.className = "card match";
@@ -106,7 +112,10 @@ function cardsNotMatch() {
 console.log("no match!");
 clickedCards.splice(0, 2);
 };
-function allCardsMatch() {};
+
+function allCardsMatch() {
+	console.log("all cards match!")
+};
 function incrementCounter() {};
 function restartGame() {};
 /*
