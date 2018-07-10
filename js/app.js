@@ -6,9 +6,10 @@ var deckList = deckList.concat(deckList);
 
 //var click = event.target.className;
 //console.log(click);
-var clickedCards = new Array();
-var guessedCards = new Array();
+var clickedCards = [];
+var guessedCards = [];
 var createNewDeck = false;
+console.log(clickedCards);
 memoryGame();
 /*
  * Display the cards on the page
@@ -20,16 +21,11 @@ function memoryGame() {
 if (createNewDeck == false) {
 	createDeck();
 	document.getElementById("deck").addEventListener("click", openCard);
-	document.getElementById("restart").addEventListener("click", restartGame);
-	if (clickedCards[0] == clickedCards[1]) 
-			{
-				cardsMatch(); 
-				incrementCounter();
-				if (guessedCards.length == deckList.length) 
-				{
-					allCardsMatch();
-				}
-			}
+
+	//document.getElementById("restart").addEventListener("click", restartGame);
+	console.log(clickedCards[0]);
+	console.log("hello");
+	
 		if (clickedCards[0] !== clickedCards[1]) 
 			{
 				cardsNotMatch();
@@ -84,25 +80,43 @@ if (event.target.className.includes("card") || event.target.className.includes("
 	if (clickedCards.length <=1) {
 
 		if (event.target.className.includes("card")) {
-			event.target.className = "card match";
+			event.target.className = "card open show";
 			clickedCards.push(event.target.firstChild.className);
 		}
 
 		if (event.target.className.includes("fa")) {
-			event.target.parentNode.className = "card match"
+			event.target.parentNode.className = "card open show";
 			clickedCards.push(event.target.className);
 		}
 
 		
-console.log(event.target);
-console.log(event.target.className);
+//console.log(event.target);
+//console.log(event.target.className);
 console.log(clickedCards);
 		}
 
 	}
+	if ((clickedCards[0] != undefined) && (clickedCards[0] == clickedCards[1])) {
+		
+				cardsMatch(); 
+				incrementCounter();
+				if (guessedCards.length == deckList.length) 
+				{ 
+					allCardsMatch();
+				}
+			}
 }
 
-function cardsMatch() {};
+function cardsMatch() {
+	console.log("match!");
+	guessedCards.push(clickedCards[0]);
+	guessedCards.push(clickedCards[1]);
+	clickedCards.splice(0, 2);
+}
+	//var matchedCards = document.getElementsByClassName(clickedCards[0]);
+	
+	//matchedCards.parentNode.className = "card match";
+
 function cardsNotMatch() {};
 function allCardsMatch() {};
 function incrementCounter() {};
