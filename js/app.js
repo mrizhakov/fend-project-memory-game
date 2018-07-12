@@ -70,10 +70,21 @@ function shuffle(array) {
 
 function openCard() {
 
-/* store the unique ID of opened card in array, by appending to openedCardId[]*/
+/* 	store the unique ID of opened card in array, by appending to openedCardId[] 
+	store the class name of opened card in clickedCards[]
+	increment move counter
+*/
 
-if (event.target.className.includes("card")) {openedCardId.push(event.target.id)}
-if (event.target.className.includes("fa")) {openedCardId.push(event.target.parentNode.id)}
+if (event.target.className.includes("card")) {
+	openedCardId.push(event.target.id);
+	clickedCards.push(document.getElementById(openedCardId[openedCardId.length-1]).firstChild.className);
+	incrementCounter();
+}
+if (event.target.className.includes("fa")) {
+	openedCardId.push(event.target.parentNode.id);
+	clickedCards.push(document.getElementById(openedCardId[openedCardId.length-1]).firstChild.className);
+	incrementCounter();
+}
 console.log("openedCardId = " + openedCardId); //for test purposes
 
 // if openedCardId is bigger than 2 elements, clear the array and exit function
@@ -86,15 +97,15 @@ if (openedCardId.length > 2) {
 	}
 
 /* increment move counter */
-incrementCounter();
+
 console.log("openedCardId is " + openedCardId);
 console.log("openedCardId.length is " + openedCardId.length);
 
 /* changes DOM of card with clicked ID to show it in the browser*/
+if ((openedCardId.length > 0) && (openedCardId.length <= 2)) {
 document.getElementById(openedCardId[openedCardId.length-1]).className = "card open show";
-clickedCards.push(document.getElementById(openedCardId[openedCardId.length-1]).firstChild.className);
 console.log("clickedCards is " + clickedCards);
-
+}
 /* checks if two cards are open and match to launch cardsMatch*/
 if (openedCardId.length == 2) {
 	if ((clickedCards[0] != undefined) && (clickedCards[0] == clickedCards[1])) {
