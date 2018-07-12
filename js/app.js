@@ -125,18 +125,20 @@ if (openedCardId.length == 2) {
 
 function cardsMatch() {
 	console.log("match!");
+//store the ID's of matched cards in guessedCards[]
+	guessedCards.push(openedCardId[0]);
+	guessedCards.push(openedCardId[1]);
+	document.getElementById(openedCardId[0]).className = "card match";
+	document.getElementById(openedCardId[1]).className = "card match";
+//document.getElementsByClassName(guessedCards[guessedCards.length]).parentNode.className =
 	console.log("clickedCards status " + clickedCards);
 	console.log("guessedCards status " + guessedCards);
 	console.log("moves status " + moves);
-	
-	guessedCards.push(clickedCards[0]);
-	guessedCards.push(clickedCards[1]);
-	var matchedCards = document.getElementsByClassName(guessedCards[guessedCards.length-1]);
-	matchedCards[0].parentNode.className = "card match";
-	matchedCards[1].parentNode.className = "card match";
-	//document.getElementsByClassName(guessedCards[guessedCards.length]).parentNode.className =
+	console.log("number of guessedCard " + guessedCards.length);
+// clean variables id and class of open cards
+	openedCardId = [];
 	clickedCards = [];
-	}
+		}
 	//var matchedCards = document.getElementsByClassName(clickedCards[0]);
 	
 	//matchedCards.parentNode.className = "card match";
@@ -146,7 +148,7 @@ console.log("no match!");
 console.log("clickedCards status " + clickedCards);
 console.log("guessedCards status " + guessedCards);
 console.log("moves status " + moves);
-// change card class name back to "card"
+// close card by changing card class name back to "card"
 document.getElementsByClassName(clickedCards[0])[0].parentNode.className = "card";
 document.getElementsByClassName(clickedCards[1])[0].parentNode.className = "card";
 // clean variables id and class of open cards
