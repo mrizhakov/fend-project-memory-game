@@ -10,8 +10,8 @@ var clickedCards = [];
 var guessedCards = [];
 var createNewDeck = false;
 var moves = 1;
-var maximumMoves = 10;
-console.log(clickedCards);
+var maximumMoves = 30;
+var openedCardId = [];
 memoryGame();
 /*
  * Display the cards on the page
@@ -26,8 +26,6 @@ if (createNewDeck == false) {
 	document.getElementById("restart").addEventListener("click", restartGame);
 
 	//document.getElementById("restart").addEventListener("click", restartGame);
-	console.log(clickedCards[0]);
-	console.log("hello");
 	} 
 }
 
@@ -39,6 +37,7 @@ shuffle(deckList);
 		var deckInternal = document.createDocumentFragment();
 		var newCard = document.createElement("li");
 		newCard.className = "card";
+		newCard.id = i;
 		var newCardInternal = document.createElement("i");
 
 			var testText = document.createTextNode(deckList[i]); //for test purposes to identity card, delete when finished
@@ -70,43 +69,62 @@ function shuffle(array) {
 /*checks how many cards are open*/
 
 function openCard() {
-/* opens cards */
-if (event.target.className.includes("card") || event.target.className.includes("fa")) {
-	incrementCounter();
 
-	if (clickedCards.length <=1) {
+/* store the unique ID of opened card in array, by appending to openedCardId[]*/
 
-		if (event.target.className.includes("card")) {
-			event.target.className = "card open show";
-			clickedCards.push(event.target.firstChild.className);
-		}
+if (event.target.className.includes("card")) {openedCardId.push(event.target.id)}
+if (event.target.className.includes("fa")) {openedCardId.push(event.target.parentNode.id)}
+console.log("openedCardId = " + openedCardId); //for test purposes
 
-		if (event.target.className.includes("fa")) {
-			event.target.parentNode.className = "card open show";
-			clickedCards.push(event.target.className);
-			}
-		}
+// if openedCardId is bigger than 2 elements, clear the array and exit function
+if (openedCardId.length > 2) {
+	openedCardId = [];
+	console.log("openedCardId = " + openedCardId); //for test purposes
+	console.log("openedCardId more than 2, cleaning openedCardId")
+	console.log("openedCardId = " + openedCardId); //for test purposes
+	return;
 	}
 
-/* checks if two cards are open and match to launch cardsMatch and incrementCounter()*/
+/* increment move counter */
+incrementCounter();
+console.log("openedCardId is " + openedCardId);
+console.log("openedCardId.length is " + openedCardId.length);
+
+/* changes DOM of card with clicked ID to show it in the browser*/
+document.getElementById(openedCardId[openedCardId.length-1]).className = "card open show";
+clickedCards.push(document.getElementById(openedCardId[openedCardId.length-1]).firstChild.className);
+console.log("clickedCards is " + clickedCards);
+
+/* checks if two cards are open and match to launch cardsMatch*/
+if (openedCardId.length == 2) {
 	if ((clickedCards[0] != undefined) && (clickedCards[0] == clickedCards[1])) {
 				cardsMatch(); 
-				incrementCounter();
-				}
-/* checks if two cards areopen,but dont match and launches cardsMatch() and incrementCounter()*/
+}
+
+/* checks if two cards are open,but dont match and launches cardsMatch() and incrementCounter()*/
 	if ((clickedCards[1] != undefined) && (clickedCards[0] !== clickedCards[1])) {
-				cardsNotMatch();
-				}
+				setTimeout(cardsNotMatch, 1000);
+}
+/* if the number of cards in the deck and the number of guessed cards run allCardsMathc()*/
 	if (guessedCards.length == deckList.length) {
 				allCardsMatch();
-	}
+}
+}
 }
 
 function cardsMatch() {
 	console.log("match!");
+	console.log("clickedCards status " + clickedCards);
+	console.log("guessedCards status " + guessedCards);
+	console.log("moves status " + moves);
+	
 	guessedCards.push(clickedCards[0]);
 	guessedCards.push(clickedCards[1]);
-	clickedCards.splice(0, 2);
+	var matchedCards = document.getElementsByClassName(guessedCards[guessedCards.length-1]);
+	matchedCards[0].parentNode.className = "card match";
+	matchedCards[1].parentNode.className = "card match";
+	//document.getElementsByClassName(guessedCards[guessedCards.length]).parentNode.className =
+	clickedCards = [];
 	}
 	//var matchedCards = document.getElementsByClassName(clickedCards[0]);
 	
@@ -114,19 +132,28 @@ function cardsMatch() {
 
 function cardsNotMatch() {
 console.log("no match!");
-clickedCards.splice(0, 2);
+console.log("clickedCards status " + clickedCards);
+console.log("guessedCards status " + guessedCards);
+console.log("moves status " + moves);
+// change card class name back to "card"
+document.getElementsByClassName(clickedCards[0])[0].parentNode.className = "card";
+document.getElementsByClassName(clickedCards[1])[0].parentNode.className = "card";
+// clean variables id and class of open cards
+openedCardId = [];
+clickedCards = [];
 };
 
 function allCardsMatch() {
 	console.log("all cards match!")
 };
-
+/* increases move variable by one for each move and changes the counter in the DOM, looks for number of moves not to exceed maximumMoves*/
+/* contains bugs, moves sometime increments by two*/
 function incrementCounter() {
-	var moves = parseInt(document.getElementById("moves").innerHTML, 10);
-	document.getElementById("moves").innerHTML = moves+1;
-	console.log(moves);
+	moves++;
+	document.getElementById("moves").innerHTML = moves;
+	console.log("Current move " + moves);
 
-if ((maximumMoves-2) < moves) 
+if (moves == maximumMoves) 
 {
 	console.log("too many moves, you lost!");
 	restartGame();
@@ -135,7 +162,7 @@ if ((maximumMoves-2) < moves)
 	
 
 function restartGame() {
-	var moves = 0;
+	moves = 1;
 	document.getElementById("moves").innerHTML = moves;
 	createDeck();
 };
