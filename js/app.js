@@ -10,9 +10,12 @@ var openedCardClass = [];
 var guessedCards = [];
 var createNewDeck = false;
 var moves = 1;
-var maximumMoves = 30;
+var maximumMoves = 2;
 var openedCardId = [];
 var currentCardId;
+var gamesWon = 0;
+var currentGameWon = 0;
+var endGameMsg;
 memoryGame();
 /*
  * Display the cards on the page
@@ -41,8 +44,8 @@ shuffle(deckList);
 		newCard.id = i;
 		var newCardInternal = document.createElement("i");
 
-			var testText = document.createTextNode(deckList[i]); //for test purposes to identity card, delete when finished
-			newCardInternal.appendChild(testText); //for test purposes to identity card, delete when finished
+			//var testText = document.createTextNode(deckList[i]); //for test purposes to identity card, delete when finished
+			//newCardInternal.appendChild(testText); //for test purposes to identity card, delete when finished
 
 		newCardInternal.className = "fa ";
 		newCardInternal.className += deckList[i];
@@ -105,6 +108,8 @@ if (openedCardId.length == 1) {
 	return;
 
 } else if (openedCardId.length == 2) {
+	document.getElementById(currentCardId).className = "card open show";
+
 //if 2 cards open, store the classes of the subelementsmof both cards, incrementCounter() and compare them to run cardsMatch() or cardsNotMatch() 
 	openedCardClass.push(document.getElementById(openedCardId[0]).firstChild.className);
 	openedCardClass.push(document.getElementById(openedCardId[1]).firstChild.className);
@@ -113,10 +118,10 @@ console.log("openCard() updating classes openedCardClass is " + openedCardClass)
 
 		if (openedCardClass[1] == openedCardClass[0]) {
 			console.log("match!")
-			cardsMatch();
+			setTimeout(cardsMatch, 1000);
 				} else if (openedCardClass[1] != openedCardClass[0]) {
 				console.log("not match!");
-				cardsNotMatch();
+				setTimeout(cardsNotMatch, 1000);
 
 } else {
 	console.log("Error! Less than 1 card of more than 2 cards open");} //for debugging
@@ -169,6 +174,7 @@ console.log("At cardsNotMatch() end currentCardId is " + currentCardId); //for d
 function allCardsMatch() {
 	console.log("all cards match!") //for debugging
 // clean variables id and class of open cards and list of guessed cards
+endGameModal("youWon");
 guessedCards = [];
 openedCardId = [];
 openedCardClass = [];
@@ -184,6 +190,7 @@ function incrementCounter() {
 if (moves == maximumMoves) 
 {
 	console.log("too many moves, you lost!"); //for debugging
+	endGameModal("youLost");
 	restartGame();
 }
 };
@@ -196,13 +203,21 @@ function restartGame() {
 	openedCardId = [];
 	openedCardClass = [];
 	currentCardId = null;
+	endGameModal("wantToRestart");
 	createDeck();	
 };
-//You win pop-up
-function popUp() {
-    var popup = document.getElementById("myPopup");
-    popup.classList.toggle("show");
-}
+
+//Modal ending game
+function endGameModal() { 
+	if (arguments[0] == "youWon") {
+		document.getElementById("youWon").showModal();}
+	else if (arguments[0] == "youLost") {
+		document.getElementById("youLost").showModal();}
+	else if (arguments[0] == "wantToRestart") {
+		document.getElementById("wantToRestart").showModal();}
+} 
+
+
 /*
  * set up the event listener for a card. If a card is clicked:
  *  - display the card's symbol (put this functionality in another function that you call from this one)
