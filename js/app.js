@@ -138,7 +138,7 @@ console.log("At cardsMatch() start currentCardId is " + currentCardId); //for de
 	openedCardClass = [];
 	currentCardId = null;
 	if (guessedCards.length == deckList.length) {
-				allCardsMatch();
+			allCardsMatch();
 }
 
 console.log("At cardsMatch() end openedCardId is " + openedCardId); //for debugging
@@ -168,7 +168,6 @@ console.log("At cardsNotMatch() end currentCardId is " + currentCardId); //for d
 
 function allCardsMatch() {
 	console.log("all cards match!") //for debugging
-setTimeout(popUp, 1000);
 // clean variables id and class of open cards and list of guessed cards
 guessedCards = [];
 openedCardId = [];
