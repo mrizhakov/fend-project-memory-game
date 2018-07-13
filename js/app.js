@@ -6,12 +6,13 @@ var deckList = deckList.concat(deckList);
 
 //var click = event.target.className;
 //console.log(click);
-var clickedCards = [];
+var openedCardClass = [];
 var guessedCards = [];
 var createNewDeck = false;
 var moves = 1;
 var maximumMoves = 30;
 var openedCardId = [];
+var currentCardId;
 memoryGame();
 /*
  * Display the cards on the page
@@ -69,93 +70,110 @@ function shuffle(array) {
 /*checks how many cards are open*/
 
 function openCard() {
+console.log("At openCard() launch openedCardId is " + openedCardId); //for debugging
+console.log("At openCard() launch guessedCards is " + guessedCards); //for debugging
+console.log("At openCard() launch openedCardClass is " + openedCardClass); //for debugging
+console.log("At openCard() launch currentCardId is " + currentCardId); //for debugging
 
-// 	store the unique ID of opened card in array, by appending to openedCardId[] 
-
+//assign currentCardId the value of card currently being opened only in case an element containing class or fa were clicked
 if (event.target.className.includes("card")) {
-	openedCardId.push(event.target.id);
-}	
+	currentCardId = event.target.id;
+} else if (event.target.className.includes("fa")) {
+	currentCardId = event.target.parentNode.id;
+} else {return;}
 
-if (event.target.className.includes("fa")) {
-	openedCardId.push(event.target.parentNode.id);
+//checks that this card isn't already open or already guessed, 
+//if true appends it to list of open cards, if false clears the current card and exits function
+if (openedCardId.includes(currentCardId) || guessedCards.includes(currentCardId)) {
+	currentCardId = null;
+	return;}
+else {
+openedCardId.push(currentCardId);
 }
 
-/* 	checks if there are 2 or less card opened, if they are not the same card and if any card at all is opened
-	if true stores the class name of opened card in clickedCards[] and 	increment move counter
-	if not true removes last element of openedCardIf[] and exits function
-*/
+console.log("After openCard() initial check openedCardId is " + openedCardId); //for debugging
+console.log("After openCard() initial check guessedCards is " + guessedCards); //for debugging
+console.log("After openCard() initial check openedCardClass is " + openedCardClass); //for debugging
+console.log("After openCard() initial check currentCardId is " + currentCardId); //for debugging
 
-console.log("xxxxopenedCardId = " + openedCardId); //for test purposes
+//if 1 cards open, open the card, incrementCounter(), clear the currentCardId and exit
+if (openedCardId.length == 1) {
 
-if ((openedCardId.length <= 2) && (openedCardId[0] != openedCardId[1]) && (openedCardId[0] != undefined)) 
-{
-clickedCards.push(document.getElementById(openedCardId[openedCardId.length-1]).firstChild.className);
-incrementCounter();
-} 
-else 
-{
-	openedCardId.splice(1, 1);
-	console.log("tttopenedCardId = " + openedCardId); //for test purposes
+	document.getElementById(currentCardId).className = "card open show";
+	incrementCounter();
+	currentCardId = null;
 	return;
 
-}
-console.log("yyyyopenedCardId = " + openedCardId); //for test purposes
-console.log("yyyyclickedCards = " + clickedCards); //for test purposes
+} else if (openedCardId.length == 2) {
+//if 2 cards open, store the classes of the subelementsmof both cards, incrementCounter() and compare them to run cardsMatch() or cardsNotMatch() 
+	openedCardClass.push(document.getElementById(openedCardId[0]).firstChild.className);
+	openedCardClass.push(document.getElementById(openedCardId[1]).firstChild.className);
+	incrementCounter();
+console.log("openCard() updating classes openedCardClass is " + openedCardClass); //for debugging
 
-/* changes DOM of card with clicked ID to show it in the browser*/
-if ((openedCardId.length > 0) && (openedCardId.length <= 2)) {
-document.getElementById(openedCardId[openedCardId.length-1]).className = "card open show";
+		if (openedCardClass[1] == openedCardClass[0]) {
+			console.log("match!")
+			cardsMatch();
+				} else if (openedCardClass[1] != openedCardClass[0]) {
+				console.log("not match!");
+				cardsNotMatch();
 
-}
-/* checks if two cards are open and match to launch cardsMatch*/
-if (openedCardId.length == 2) {
-	if ((clickedCards[0] != undefined) && (clickedCards[0] == clickedCards[1])) {
-				cardsMatch(); 
-}
-
-/* checks if two cards are open,but dont match and launches cardsMatch() and incrementCounter()*/
-	if ((clickedCards[1] != undefined) && (clickedCards[0] !== clickedCards[1])) {
-				setTimeout(cardsNotMatch, 1000);
-}
-/* if the number of cards in the deck and the number of guessed cards run allCardsMathc()*/
-	if (guessedCards.length == deckList.length) {
-				setTimeout(allCardsMatch, 1000);
-}
+} else {
+	console.log("Error! Less than 1 card of more than 2 cards open");} //for debugging
 }
 }
 
 function cardsMatch() {
-	console.log("match!");
-//store the ID's of matched cards in guessedCards[]
+console.log("At cardsMatch() start openedCardId is " + openedCardId); //for debugging
+console.log("At cardsMatch() start guessedCards is " + guessedCards); //for debugging
+console.log("At cardsMatch() start openedCardClass is " + openedCardClass); //for debugging
+console.log("At cardsMatch() start currentCardId is " + currentCardId); //for debugging
+	//append the ID's of matched cards in guessedCards[]
 	guessedCards.push(openedCardId[0]);
 	guessedCards.push(openedCardId[1]);
 	document.getElementById(openedCardId[0]).className = "card match";
 	document.getElementById(openedCardId[1]).className = "card match";
-// clean variables id and class of open cards
+// clean the list of opened cards and current opened card
 	openedCardId = [];
-	clickedCards = [];
-		}
-	//var matchedCards = document.getElementsByClassName(clickedCards[0]);
-	
-	//matchedCards.parentNode.className = "card match";
+	openedCardClass = [];
+	currentCardId = null;
+	if (guessedCards.length == deckList.length) {
+				allCardsMatch();
+}
 
+console.log("At cardsMatch() end openedCardId is " + openedCardId); //for debugging
+console.log("At cardsMatch() end guessedCards is " + guessedCards); //for debugging
+console.log("At cardsMatch() end openedCardClass is " + openedCardClass); //for debugging
+console.log("At cardsMatch() end currentCardId is " + currentCardId); //for debugging
+
+}
+	
 function cardsNotMatch() {
-console.log("no match!");
+		console.log("At cardsNotMatch() start openedCardId is " + openedCardId); //for debugging
+console.log("At cardsNotMatch() start guessedCards is " + guessedCards); //for debugging
+console.log("At cardsNotMatch() start openedCardClass is " + openedCardClass); //for debugging //for debugging
+console.log("At cardsNotMatch() start currentCardId is " + currentCardId); //for debugging
 // close card by changing card class name back to "card"
-document.getElementsByClassName(clickedCards[0])[0].parentNode.className = "card";
-document.getElementsByClassName(clickedCards[1])[0].parentNode.className = "card";
-// clean variables id and class of open cards
+document.getElementById(openedCardId[0]).className = "card";
+document.getElementById(openedCardId[1]).className = "card";
+// clean the list of opened cards and current opened card
 openedCardId = [];
-clickedCards = [];
+openedCardClass = [];
+currentCardId = null;
+console.log("At cardsNotMatch() end openedCardId is " + openedCardId); //for debugging
+console.log("At cardsNotMatch() end guessedCards is " + guessedCards); //for debugging
+console.log("At cardsNotMatch() end openedCardClass is " + openedCardClass); //for debugging
+console.log("At cardsNotMatch() end currentCardId is " + currentCardId); //for debugging
 };
 
 function allCardsMatch() {
-	console.log("all cards match!")
+	console.log("all cards match!") //for debugging
 setTimeout(popUp, 1000);
 // clean variables id and class of open cards and list of guessed cards
 guessedCards = [];
 openedCardId = [];
-clickedCards = [];
+openedCardClass = [];
+currentCardId = null;
 };
 /* increases move variable by one for each move and changes the counter in the DOM, looks for number of moves not to exceed maximumMoves*/
 /* contains bugs, moves sometime increments by two*/
@@ -166,7 +184,7 @@ function incrementCounter() {
 
 if (moves == maximumMoves) 
 {
-	console.log("too many moves, you lost!");
+	console.log("too many moves, you lost!"); //for debugging
 	restartGame();
 }
 };
@@ -176,6 +194,9 @@ function restartGame() {
 	moves = 1;
 	document.getElementById("moves").innerHTML = moves;
 	createDeck();
+	openedCardId = [];
+	clickedCards = [];
+	currentCardId = null;
 };
 //You win pop-up
 function popUp() {

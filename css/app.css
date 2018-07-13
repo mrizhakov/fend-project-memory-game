@@ -81,6 +81,14 @@ h1 {
     font-size: 33px;
 }
 
+.deck .card.no-match-transition {
+    cursor: default;
+    background: red;
+    font-size: 33px;
+}
+
+
+
 /*
  * Styles for the Score Panel
  */
@@ -147,7 +155,7 @@ h1 {
 }
 */
 /* Toggle this class - hide and show the popup */
-.popup .show {
+/*.popup .show {
     visibility: visible;
     -webkit-animation: fadeIn 1s;
     animation: fadeIn 1s;
@@ -162,4 +170,19 @@ h1 {
 @keyframes fadeIn {
     from {opacity: 0;}
     to {opacity:1 ;}
+}
+
+/* Cards matched animation*/
+@keyframes cardsMatched {
+    from {class:card open show;}
+    to {class:card match;}
+}
+
+/* The element to apply the animation to */
+divx {
+    width: 100px;
+    height: 100px;
+    background-color: red;
+    animation-name: example;
+    animation-duration: 4s;
 }
