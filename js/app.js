@@ -192,10 +192,11 @@ if (moves == maximumMoves)
 function restartGame() {
 	moves = 1;
 	document.getElementById("moves").innerHTML = moves;
-	createDeck();
+	guessedCards = [];
 	openedCardId = [];
-	clickedCards = [];
+	openedCardClass = [];
 	currentCardId = null;
+	createDeck();	
 };
 //You win pop-up
 function popUp() {
