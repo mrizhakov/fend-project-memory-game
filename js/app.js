@@ -30,7 +30,8 @@ if (createNewDeck == false) {
 	createDeck();
 	document.getElementById("deck").addEventListener("click", openCard);
 	document.getElementById("restart").addEventListener("click", restartGame);
-
+	setInterval(function(){ document.getElementById("timer").innerHTML = timer(); }, 1000);
+	
 	//document.getElementById("restart").addEventListener("click", restartGame);
 	} 
 }
@@ -229,7 +230,7 @@ function endGameModal() {
 //Function to display time in seconds and minutes
 function timer() {
 		var gameTimeMinutes = Math.floor((performance.now() - gameTime)/60000);
-		var gameTimeSeconds = Math.round(((performance.now() - gameTime)/1000))-(gameTimeMinutes*1000);
+		var gameTimeSeconds = Math.round(((performance.now() - gameTime)/1000))-(gameTimeMinutes*60);
  		return(gameTimeMinutes + " min " + gameTimeSeconds + " sec");
 }
 /*
