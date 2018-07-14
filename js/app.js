@@ -42,7 +42,7 @@ if (createNewDeck == false) {
 
 function createDeck() {
 document.getElementById("deck").innerHTML = "";
-
+document.getElementById("maximum-moves").innerHTML = " / " + maximumMoves +" Moves";
 shuffle(deckList);
 	for (i=0; i<deckList.length; i++) {
 		var deckInternal = document.createDocumentFragment();
@@ -81,6 +81,7 @@ function shuffle(array) {
 /*checks how many cards are open*/
 
 function openCard() {
+
 console.log("At openCard() launch openedCardId is " + openedCardId); //for debugging
 console.log("At openCard() launch guessedCards is " + guessedCards); //for debugging
 console.log("At openCard() launch openedCardClass is " + openedCardClass); //for debugging
@@ -209,12 +210,9 @@ if (moves == maximumMoves)
 	}
 };
 	
-
+//Function launched by the restart or Start New Game button on the modal end game screen for winning, losing and restart options, displaying game stats
 function restartGame() {
 //clean all variables for new game
-	moves = 1;
-	document.getElementById("moves").innerHTML = moves;
-	document.getElementsByClassName("stars")[0].childNodes[gamesWon].firstChild.className = "fa fa-star";
 	guessedCards = [];
 	guessedCards = [];
 	openedCardId = [];
@@ -224,41 +222,66 @@ function restartGame() {
 		endGameSelection = "wantToRestart";
 		}
 	endGameSelection = null;
+//update .score-panel for next game
+	moves = 1;
+	document.getElementById("moves").innerHTML = moves;
+	console.log("Games won = " + gamesWon);
+	if (gamesWon >= 1) {
+		gamesWon1 = gamesWon - 1;
+		document.getElementsByClassName("stars")[0].children[gamesWon1].firstElementChild.className = "fa fa-star";
+}
+	
 	gameTime = performance.now();
 	clearInterval(myTimer);
 	myTimer = setInterval(function(){ document.getElementById("timer").innerHTML = timer(); }, 1000);
+	switch (gamesWon) {
+	 case 0:
+	 maximumMoves = 100;
+	 break;
+
+	 case 1:
+	 maximumMoves = 80;
+	 break;
+
+	 case 2:
+	 maximumMoves = 55;
+	 break;
+
+	 case 3:
+	 maximumMoves = 40;
+	 break;
+
+	 case 4:
+	 maximumMoves = 30;
+	 break;
+
+	 case 5:
+	 maximumMoves = 20;}
 	createDeck();
 }
 
-//Modal ending game
+//Modal ending game for winning, losing and restart options, displaying game stats
 function endGameModal() {
-console.log(arguments);
-	
-
-	
 	if (arguments[0] == "youWon") {
 		document.getElementById("end-game-msg").firstChild.innerHTML = "Congratulations! You won!";
-		document.getElementById("cancel").style.display = 'none';
+		document.getElementById("cancel").style.display = "none";
 		document.getElementById("restart-confirm").innerHTML = "Start new game";
-		gamesWon++;
+		gamesWon = gamesWon + 1;
+
 	} else if (arguments[0] == "youLost") {
 		document.getElementById("end-game-msg").firstChild.innerHTML = "You lost!";
-		document.getElementById("cancel").style.display = 'none';
+		document.getElementById("cancel").style.display = "none";
 		document.getElementById("restart-confirm").innerHTML = "Start new game";
 	} else {
 		document.getElementById("end-game-msg").firstChild.innerHTML = "Are you sure you want to abandon game and restart? ";
-
-
-		//var restartConfirm = document.createElement("button");
-		//document.getElementById("cancel").parentNode.removeChild;
-		//document.getElementById("continue").parentNode.appendChild(restartConfirm);
-		//restartConfirm.outerHTML = "<button id=\"restart-confirm\" type=\"submit\">Restart game</button>";
-
-		
+		document.getElementById("cancel").style.display = "";
+	
 	} 
 	document.getElementById("game-time").innerHTML = timer();
 	document.getElementById("game-moves").innerHTML = "Game moves " + moves + " out of " + maximumMoves;
-	document.getElementById("games-won").innerHTML = "Games won "+ gamesWon + " out of 3";
+	document.getElementById("games-won").innerHTML = "Games won "+ gamesWon + " out of 5";
+	clearInterval(myTimer);
+		
 	document.getElementById("endGame").showModal();
 	}
 
@@ -268,14 +291,8 @@ function timer() {
 		var gameTimeSeconds = Math.round(((performance.now() - gameTime)/1000))-(gameTimeMinutes*60);
  		return(gameTimeMinutes + " min " + gameTimeSeconds + " sec");
 }
-/*
-5000/1000 =seconds
-(seconds/60) = mins
-math.floor (mins)
-math.floor(x/60000)
 
-/*
- * set up the event listener for a card. If a card is clicked:
+ /* set up the event listener for a card. If a card is clicked:
  *  - display the card's symbol (put this functionality in another function that you call from this one)
  *  - add the card to a *list* of "open" cards (put this functionality in another function that you call from this one)
  *  - if the list already has another card, check to see if the two cards match
