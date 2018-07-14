@@ -10,12 +10,14 @@ var openedCardClass = [];
 var guessedCards = [];
 var createNewDeck = false;
 var moves = 1;
-var maximumMoves = 2;
+var maximumMoves = 3;
 var openedCardId = [];
 var currentCardId;
-var gamesWon = 0;
-var currentGameWon = 0;
-var endGameMsg;
+//var gamesWon = 0;
+//var currentGameWon = 0;
+//var endGameMsg;
+var endGameSelection = null;
+var gameTime = null;
 memoryGame();
 /*
  * Display the cards on the page
@@ -53,6 +55,7 @@ shuffle(deckList);
 		deckInternal.appendChild(newCard);
 		document.getElementById("deck").appendChild(deckInternal);
 }
+var gameTime = performance.now();
 	}
 
 // Shuffle function from http://stackoverflow.com/a/2450976
@@ -142,6 +145,8 @@ console.log("At cardsMatch() start currentCardId is " + currentCardId); //for de
 	openedCardId = [];
 	openedCardClass = [];
 	currentCardId = null;
+
+// if all cards in a deck were guessed, launch allCardsMatch()
 	if (guessedCards.length == deckList.length) {
 			allCardsMatch();
 }
@@ -174,11 +179,13 @@ console.log("At cardsNotMatch() end currentCardId is " + currentCardId); //for d
 function allCardsMatch() {
 	console.log("all cards match!") //for debugging
 // clean variables id and class of open cards and list of guessed cards
-endGameModal("youWon");
+
 guessedCards = [];
 openedCardId = [];
 openedCardClass = [];
 currentCardId = null;
+endGameSelection = "youWon";
+restartGame();
 };
 /* increases move variable by one for each move and changes the counter in the DOM, looks for number of moves not to exceed maximumMoves*/
 /* contains bugs, moves sometime increments by two*/
@@ -188,35 +195,48 @@ function incrementCounter() {
 	console.log("Current move " + moves);
 
 if (moves == maximumMoves) 
-{
+{ 
 	console.log("too many moves, you lost!"); //for debugging
-	endGameModal("youLost");
+	endGameSelection = "youLost";
 	restartGame();
-}
+	}
 };
 	
 
 function restartGame() {
+//clean all variables for new game
 	moves = 1;
 	document.getElementById("moves").innerHTML = moves;
 	guessedCards = [];
 	openedCardId = [];
 	openedCardClass = [];
 	currentCardId = null;
-	endGameModal("wantToRestart");
-	createDeck();	
+	if (endGameSelection == null) {
+		endGameSelection = "wantToRestart";
+		}
+	//gameTime = (performance.now() - gameTime)/1000;
+	console.log(timer());
+	endGameModal(endGameSelection);
+	endGameSelection = null;
+	console.log(gameTime);
 };
 
 //Modal ending game
 function endGameModal() { 
-	if (arguments[0] == "youWon") {
-		document.getElementById("youWon").showModal();}
-	else if (arguments[0] == "youLost") {
-		document.getElementById("youLost").showModal();}
-	else if (arguments[0] == "wantToRestart") {
-		document.getElementById("wantToRestart").showModal();}
-} 
+	document.getElementById(endGameSelection).showModal();
+}
 
+//Function to display time in seconds and minutes
+function timer() {
+		var gameTimeMinutes = Math.floor((performance.now() - gameTime)/60000);
+		var gameTimeSeconds = Math.round(((performance.now() - gameTime)/1000))-(gameTimeMinutes*1000);
+ 		return(gameTimeMinutes + " min " + gameTimeSeconds + " sec");
+}
+/*
+5000/1000 =seconds
+(seconds/60) = mins
+math.floor (mins)
+math.floor(x/60000)
 
 /*
  * set up the event listener for a card. If a card is clicked:
