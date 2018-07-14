@@ -9,11 +9,11 @@ var deckList = deckList.concat(deckList);
 var openedCardClass = [];
 var guessedCards = [];
 var createNewDeck = false;
-var moves = 1;
-var maximumMoves = 3;
+var moves = 0;
+var maximumMoves = 100;
 var openedCardId = [];
 var currentCardId;
-//var gamesWon = 0;
+var gamesWon = 0;
 //var currentGameWon = 0;
 //var endGameMsg;
 var endGameSelection = null;
@@ -29,8 +29,12 @@ function memoryGame() {
 if (createNewDeck == false) {
 	createDeck();
 	document.getElementById("deck").addEventListener("click", openCard);
-	document.getElementById("restart").addEventListener("click", restartGame);
-	setInterval(function(){ document.getElementById("timer").innerHTML = timer(); }, 1000);
+	document.getElementById("restart").addEventListener("click", endGameModal);
+	document.getElementById("restart-confirm").addEventListener("click", restartGame);
+	document.getElementById("cancel").addEventListener("click", function() {
+		document.getElementById("endGame").close();
+	});
+	myTimer = setInterval(function(){ document.getElementById("timer").innerHTML = timer(); }, 1000);
 	
 	//document.getElementById("restart").addEventListener("click", restartGame);
 	} 
@@ -117,7 +121,9 @@ if (openedCardId.length == 1) {
 //if 2 cards open, store the classes of the subelementsmof both cards, incrementCounter() and compare them to run cardsMatch() or cardsNotMatch() 
 	openedCardClass.push(document.getElementById(openedCardId[0]).firstChild.className);
 	openedCardClass.push(document.getElementById(openedCardId[1]).firstChild.className);
+
 	incrementCounter();
+
 console.log("openCard() updating classes openedCardClass is " + openedCardClass); //for debugging
 
 		if (openedCardClass[1] == openedCardClass[0]) {
@@ -186,7 +192,7 @@ openedCardId = [];
 openedCardClass = [];
 currentCardId = null;
 endGameSelection = "youWon";
-restartGame();
+endGameModal(endGameSelection);
 };
 /* increases move variable by one for each move and changes the counter in the DOM, looks for number of moves not to exceed maximumMoves*/
 /* contains bugs, moves sometime increments by two*/
@@ -199,7 +205,7 @@ if (moves == maximumMoves)
 { 
 	console.log("too many moves, you lost!"); //for debugging
 	endGameSelection = "youLost";
-	restartGame();
+	endGameModal(endGameSelection);
 	}
 };
 	
@@ -208,6 +214,8 @@ function restartGame() {
 //clean all variables for new game
 	moves = 1;
 	document.getElementById("moves").innerHTML = moves;
+	document.getElementsByClassName("stars")[0].childNodes[gamesWon].firstChild.className = "fa fa-star";
+	guessedCards = [];
 	guessedCards = [];
 	openedCardId = [];
 	openedCardClass = [];
@@ -215,17 +223,44 @@ function restartGame() {
 	if (endGameSelection == null) {
 		endGameSelection = "wantToRestart";
 		}
-	//gameTime = (performance.now() - gameTime)/1000;
-	console.log(timer());
-	endGameModal(endGameSelection);
 	endGameSelection = null;
-	console.log(gameTime);
-};
+	gameTime = performance.now();
+	clearInterval(myTimer);
+	myTimer = setInterval(function(){ document.getElementById("timer").innerHTML = timer(); }, 1000);
+	createDeck();
+}
 
 //Modal ending game
-function endGameModal() { 
-	document.getElementById(endGameSelection).showModal();
-}
+function endGameModal() {
+console.log(arguments);
+	
+
+	
+	if (arguments[0] == "youWon") {
+		document.getElementById("end-game-msg").firstChild.innerHTML = "Congratulations! You won!";
+		document.getElementById("cancel").style.display = 'none';
+		document.getElementById("restart-confirm").innerHTML = "Start new game";
+		gamesWon++;
+	} else if (arguments[0] == "youLost") {
+		document.getElementById("end-game-msg").firstChild.innerHTML = "You lost!";
+		document.getElementById("cancel").style.display = 'none';
+		document.getElementById("restart-confirm").innerHTML = "Start new game";
+	} else {
+		document.getElementById("end-game-msg").firstChild.innerHTML = "Are you sure you want to abandon game and restart? ";
+
+
+		//var restartConfirm = document.createElement("button");
+		//document.getElementById("cancel").parentNode.removeChild;
+		//document.getElementById("continue").parentNode.appendChild(restartConfirm);
+		//restartConfirm.outerHTML = "<button id=\"restart-confirm\" type=\"submit\">Restart game</button>";
+
+		
+	} 
+	document.getElementById("game-time").innerHTML = timer();
+	document.getElementById("game-moves").innerHTML = "Game moves " + moves + " out of " + maximumMoves;
+	document.getElementById("games-won").innerHTML = "Games won "+ gamesWon + " out of 3";
+	document.getElementById("endGame").showModal();
+	}
 
 //Function to display time in seconds and minutes
 function timer() {

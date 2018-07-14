@@ -16,9 +16,9 @@
 
         <section class="score-panel">
         	<ul class="stars">
-        		<li><i class="fa fa-star"></i></li>
-        		<li><i class="fa fa-star"></i></li>
-        		<li><i class="fa fa-star"></i></li>
+        		<li><i class="fa fa-star-o"></i></li>
+        		<li><i class="fa fa-star-o"></i></li>
+        		<li><i class="fa fa-star-o"></i></li>
         	</ul>
 
         	<span class="moves" id="moves">1</span> Moves
@@ -29,17 +29,6 @@
         		<i class="fa fa-repeat"></i>
         	</div>
         </section>
-<!---You won Modal -->
-<dialog id="youWon">Congratulations! You won!</dialog>
-<!---You won Modal end -->
-
-<!---You lost Modal -->
-<dialog id="youLost">Sorry! You lost!</dialog>
-<!---You lost Modal end -->
-
-<!---Restart Modal -->
-<dialog id="wantToRestart">Are you sure you want to abandon game and restart</dialog>
-<!---Restart Modal end -->
 
         <ul class="deck" id="deck"> <!--added deck tag to easily get the DOM element-->
 
@@ -93,7 +82,23 @@
             </li>
         </ul>
     </div>
-
+<!---You won Modal -->
+<dialog id="endGame">
+    <form method="dialog">
+        <div id="end-game-msg"><h3>Congratulations! You won!</h3></div>
+        <br>
+        <hr>
+        <div id="game-moves">Game moves</div>
+        <div id="game-time">Game time</div>
+        <div id="games-won">Games won</div>
+        <hr>
+        <div id="continue">Click to Restart Game</div>
+        <br>
+        <button id="restart-confirm"type="submit">Restart</button>
+        <button id="cancel" type="reset">Cancel</button>
+    </form>
+</dialog>
+<!---You won Modal end -->
     <script src="js/app.js"></script>
 </body>
 </html>
